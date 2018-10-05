@@ -32,4 +32,26 @@ class ProdutoController extends Controller
                          ->withSuccess('Fornecedor cadastrado com sucesso!');
     }
 
+    public function getInfo ($id)
+    {
+        $produto = $this->produto->with('imagens','fornecedor')->find($id);
+        //dd($prodinfo);
+        return view('produto.info', compact('produto'));
+    }
+
+    public function delete($id)
+    {
+        $produto = $this->produto->with('imagens','fornecedor')->find($id);
+
+        $delete = $produto->delete();
+
+        if($delete){
+            return redirect()->route('produto.index')
+            ->withSuccess('Produto deletado com sucesso!');
+        } else {
+            redirect()->route('/')
+                         ->withSuccess('Produto deletado com sucesso!');
+        }
+    }
+
 }

@@ -14,7 +14,9 @@
 $this->get('/','HomeController@index')->name('home');
 
 $this->get('produto', 'ProdutoController@index')->name('produto.index');
+$this->get('produto/info/{id}', 'ProdutoController@getInfo');
 $this->post('produto.store', 'ProdutoController@store')->name('produto.store');
+$this->get('produto/info/delete/{id}', 'ProdutoController@delete');
 
 $this->get('fornecedor', 'FornecedorController@index')->name('fornecedor.index');
 $this->post('store', 'FornecedorController@store')->name('fornecedor.store');
