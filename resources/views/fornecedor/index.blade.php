@@ -22,8 +22,3 @@
 @endforelse
 </ul>
 @endsection
-                        {{-- @forelse ($produtoimagens as $itemimg)
-
-                        @empty
-                            {{-- <img src="https://via.placeholder.com/200x200" alt=""> --}}
-                            @endforelse --}}
