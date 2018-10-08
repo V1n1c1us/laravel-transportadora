@@ -17,7 +17,7 @@ class ProdutoController extends Controller
 
     public function index (Produto $produto)
     {
-        $produtos = $this->produto->with('imagens','fornecedor')->get();
+        $produtos = $this->produto->with('imagens:produto_id,file','fornecedor:id,nome')->get();
 
         $fornecedores = $this->fornecedor->all();
 
