@@ -1,7 +1,11 @@
 @extends('template.website')
 @section('content')
+<ul>
+    @foreach ($produto->imagens as $item)
+        <li style="display:inline-block;"><img src="{{ $item->file }}" alt="{{ $item->id }}"></li>
+    @endforeach
+</ul>
 <div class="card" style="width: 18rem;">
-    <img class="card-img-top" src=".../100px180/?text=Image cap" alt="Card image cap">
     <div class="card-body">
         <h5 class="card-title">{{ $produto->nome }}</h5>
         <p class="card-text">{{ $produto->descricao }}</p>
