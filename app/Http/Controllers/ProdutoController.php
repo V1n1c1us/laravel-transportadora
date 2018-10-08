@@ -34,7 +34,8 @@ class ProdutoController extends Controller
 
     public function getInfo ($id)
     {
-        $produto = $this->produto->with('imagens','fornecedor')->find($id);
+        //Loading Specific Columns-> imagens / fornecedor
+        $produto = $this->produto->with('imagens:produto_id,file','fornecedor:id,nome')->find($id);
         //dd($prodinfo);
         return view('produto.info', compact('produto'));
     }
