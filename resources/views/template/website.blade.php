@@ -32,9 +32,6 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('fornecedor.index') }}">Fornecedor</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#">Disabled</a>
-            </li>
             </ul>
         </div>
         </div>

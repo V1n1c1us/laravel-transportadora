@@ -3,11 +3,12 @@
         {{ session('success') }}
     </div>
 @endif
-<form action="{{ route('produto.store') }}" method="post">
+<form action="{{ route('produto.store') }}" method="post" enctype="multipart/form-data"
     @csrf
     <input type="text" name="nome" id="">
     <input type="text" name="descricao" id="">
     <input type="text" name="quantidade" id="">
+    <input type="text" name="file" id="">
     <button type="submit">Enviar</button>
 </form>
 <hr>

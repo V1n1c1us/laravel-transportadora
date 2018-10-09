@@ -8,7 +8,7 @@ class Produto extends Model
 {
     public $timestamps = false;
 
-    protected $fillable = ['nome','descricao','quantidade','fornecedor_id'];
+    protected $fillable = ['nome','descricao','quantidade','fornecedor_id','produto_imagem_id'];
 
     //produto pertence a 1 fornecedor
     public function fornecedor ()

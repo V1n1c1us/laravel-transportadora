@@ -3,16 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Controller;
 use App\Produto;
 use App\Fornecedor;
+use App\ProdutoImagem;
 
 class ProdutoController extends Controller
 {
 
-    public function __construct(Produto $produto, Fornecedor $fornecedor)
+    public function __construct(Produto $produto, Fornecedor $fornecedor, ProdutoImagem $produtoImagem)
     {
         $this->produto = $produto;
         $this->fornecedor = $fornecedor;
+        $this->produtoImagem = $produtoImagem;
     }
 
     public function index (Produto $produto)
@@ -26,8 +30,19 @@ class ProdutoController extends Controller
 
     public function store (Request $request)
     {
-        $insert = $this->produto->create($request->all());
+       $insert = $this->produto->create($request->all());
+       $folder = 'produto_img_'.$request->nome;
+       $filename = str_random(30) . '.' . $request->file('file')->getClientOriginalExtension();
+       $destination = public_path() . DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR;
+       $fullPath = DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR . $filename;
 
+       if(Storage::allFiles($folder) == []){
+          $request->file('file')->move($destination, $filename);
+          $createFile = $this->produtoImagem->create(['produto_id' => $insert->id,
+                                                   'file' => $fullPath]);
+       }
+
+        dd($createFile);
         return redirect()->route('produto.index')
                          ->withSuccess('Fornecedor cadastrado com sucesso!');
     }
@@ -43,7 +58,9 @@ class ProdutoController extends Controller
     public function delete($id)
     {
         $produto = $this->produto->with('imagens','fornecedor')->find($id);
-
+        foreach($produto->imagens as $item) {
+            unlink(public_path(). DIRECTORY_SEPARATOR . $item->file);
+        }
         $delete = $produto->delete();
 
         if($delete){
