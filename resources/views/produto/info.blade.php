@@ -4,17 +4,17 @@
 <div class="row justify-content-md-center">
     <div class="col-md-auto">
 <div class="card" style="width: 20rem;">
-    <div class="info-slider">
         @if ($produto->imagens->isNotEmpty())
+        <div class="info-slider">
             @foreach ($produto->imagens as $item)
                 <div style="display:inline-block;"><img src="{{ $item->file }}" alt="{{ $item->id }}"></div>
             @endforeach
+        </div>
         @else
             <div class="alert alert-info text-center" role="alert">
                 O produto <b>{{ $produto->nome }}</b> não possui imagens!
             </div>
         @endif
-</div>
     <div class="card-body">
         <h5 class="card-title">{{ $produto->nome }}</h5>
         <p class="card-text">{{ $produto->descricao }}</p>

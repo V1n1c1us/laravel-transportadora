@@ -31,18 +31,22 @@ class ProdutoController extends Controller
     public function store (Request $request)
     {
        $insert = $this->produto->create($request->all());
+
        $folder = 'produto_img_'.$request->nome;
-       $filename = str_random(30) . '.' . $request->file('file')->getClientOriginalExtension();
-       $destination = public_path() . DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR;
-       $fullPath = DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR . $filename;
 
-       if(Storage::allFiles($folder) == []){
-          $request->file('file')->move($destination, $filename);
-          $createFile = $this->produtoImagem->create(['produto_id' => $insert->id,
-                                                   'file' => $fullPath]);
+       $files = $request->file('file');
+
+       foreach($files as $file) {
+           $filename = str_random(30) . '.' . $file->getClientOriginalExtension();
+           $destination = public_path() . DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR;
+           $fullPath = DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR . $filename;
+
+           if(Storage::allFiles($folder) == []){
+            $file->move($destination, $filename);
+            $createFile = $this->produtoImagem->create(['produto_id' => $insert->id,
+                                                     'file' => $fullPath]);
+         }
        }
-
-        dd($createFile);
         return redirect()->route('produto.index')
                          ->withSuccess('Fornecedor cadastrado com sucesso!');
     }

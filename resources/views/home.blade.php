@@ -22,9 +22,11 @@
                         </div>
                     </div>
                 </div>
+
                 @empty
                     <h2>nada</h2>
                 @endforelse
+            {!! $produtos->links() !!}
             </div>
 
         </section>

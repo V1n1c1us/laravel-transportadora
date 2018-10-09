@@ -14,7 +14,7 @@ class HomeController extends Controller
 
     public function index ()
     {
-        $produtos = $this->produto->with('imagens','fornecedor')->get();
+        $produtos = $this->produto->with('imagens','fornecedor')->paginate(6);
         //dd($produtos);
         return view('home', compact('produtos'));
     }

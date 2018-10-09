@@ -16,7 +16,7 @@
             <option value="{{ $item->id }}">{{ $item->nome }}</option>
         @endforeach
     </select>
-    <input type="file" name="file" id="file">
+    <input type="file" name="file[]" id="file" multiple>
     <button type="submit">Enviar</button>
 </form>
 <hr>
