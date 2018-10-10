@@ -62,6 +62,7 @@ class ProdutoController extends Controller
     public function delete($id)
     {
         $produto = $this->produto->with('imagens','fornecedor')->find($id);
+
         foreach($produto->imagens as $item) {
             unlink(public_path(). DIRECTORY_SEPARATOR . $item->file);
         }
