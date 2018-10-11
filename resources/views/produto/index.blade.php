@@ -1,6 +1,11 @@
-@extends('template.website') @section('content') @if (session('success'))
-<div class="alert alert-success">
-    {{ session('success') }}
+@extends('template.website')
+@section('content')
+@if (session('success'))
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>{{ session('success') }}</strong>.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
 </div>
 @endif
 <form action="{{ route('produto.store') }}" method="post" enctype="multipart/form-data">
@@ -45,6 +50,7 @@
             <th scope="col">Nome</th>
             <th scope="col">Descrição</th>
             <th scope="col">Quantidade</th>
+            <th scope="col">Fornecedor</th>
             <th scope="col">Imagens</th>
             <th scope="col">Operação</th>
 
@@ -57,9 +63,10 @@
             <td>{{ $produto->nome }}</td>
             <td>{{ $produto->descricao }}</td>
             <td>{{ $produto->quantidade }}</td>
+            <td>{{ $produto->fornecedor->nome }}</td>
             <td>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal_{{$produto->id}}">
-                    Launch demo modal
+                <button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#exampleModal_{{$produto->id}}">
+                    <i class="far fa-eye"></i>
                 </button>
             </td>
             <!-- Modal -->
@@ -67,7 +74,7 @@
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel"><span class="badge badge-pill badge-info">Imagens</span></h5>
+                            <h5 class="modal-title" id="exampleModalLabel"><span class="badge badge-pill badge-info">{{ $produto->imagens->count() }}</span>Imagens</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -75,9 +82,13 @@
                         <div class="modal-body">
                             <ul class="modal-list">
                                 @forelse ($produto->imagens as $produtoImg)
-                                    <li><img class="rounded float-left modal-image" src="{{asset($produtoImg->file) }}" alt="{{ $produtoImg->id }}"></li>
+                                    <li>
+                                        <img class="rounded float-left modal-image" src="{{asset($produtoImg->file) }}" alt="{{ $produtoImg->id }}">
+                                    </li>
                                 @empty
-                                <img src="#" alt="">
+                                    <div class="alert alert-info" role="alert">
+                                        O <strong>{{ $produto->nome }}</strong> não contêm imagens cadastradas!
+                                    </div>
                                 @endforelse
                             </ul>
                         </div>
@@ -89,12 +100,18 @@
                 </div>
             </div>
             <td>
-                <a href="produto/delete/{{ $produto->id }}"><i class="fas fa-trash-alt fa-2x"></i></a> |
-                <a href=""><i class="fas fa-edit fa-2x"></i></a>
+                <div class="btn-group" role="group" aria-label="actions">
+                    <button type="button" class="btn btn-link">
+                        <a href="produto/delete/{{ $produto->id }}"><i class="fas fa-trash-alt fa-1x"></i></a>
+                    </button>
+                    <button type="button" class="btn btn-link">
+                            <a href="produto/edit/{{ $produto->id }}"><i class="fas fa-edit fa-1x"></i></a>
+                    </button>
+                </div>
             </td>
         </tr>
         @endforeach
     </tbody>
 </table>
-
+{!! $produtos->links() !!}
 @endsection

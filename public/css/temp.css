@@ -6,4 +6,4 @@
 }
 /* Modal Products Image */
 ul.modal-list { list-style: none; display: inline;}
-li .modal-image{ width: 250px; height: 250px;}
+li .modal-image{ width: 250px; height: 250px; padding: 10px;}
