@@ -21,7 +21,7 @@ class ProdutoController extends Controller
 
     public function index (Produto $produto)
     {
-        $produtos = $this->produto->with('imagens:produto_id,file','fornecedor:id,nome')->paginate(10);
+        $produtos = $this->produto->with('imagens:id,produto_id,file','fornecedor:id,nome')->paginate(10);
 
         $fornecedores = $this->fornecedor->all();
 
@@ -61,7 +61,7 @@ class ProdutoController extends Controller
 
     public function edit ($id)
     {
-        $produto = $this->produto->with('imagens:produto_id,file','fornecedor:id,nome')->find($id);
+        $produto = $this->produto->with('imagens:id,produto_id,file,imgprincipal','fornecedor:id,nome')->find($id);
         $fornecedores = $this->fornecedor->all();
         return view('produto.edit', compact('produto','fornecedores'));
     }
@@ -69,14 +69,25 @@ class ProdutoController extends Controller
     public function update (Request $request, $id)
     {
         $produto = $this->produto->find($id);
-        //dd($request->all());
+
         $produto->nome = $request->get('nome');
         $produto->descricao = $request->get('descricao');
         $produto->quantidade = $request->get('quantidade');
         $produto->fornecedor_id = $request->get('fornecedor_id');
+        $idImg = $request->get('imgprincipal');
+
+        $atualiza = $this->produtoImagem->where('id', '=', $idImg)->update(['imgprincipal' => 1]);
+
         $produto->save();
 
-        return redirect()->route('produto.index')->withSuccess('Produto cadastrado com sucesso!');;
+        return redirect()->route('produto.index')->withSuccess('Produto cadastrado com sucesso!');
+    }
+
+    public function updateimg (Request $request, $id)
+    {
+        $produto = $this->produto->find($id);
+        dd($produto);
+        return redirect()->route('produto.index')->withSuccess('Produto cadastrado com sucesso!');
     }
 
     public function delete($id)
