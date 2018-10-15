@@ -8,7 +8,7 @@ class ProdutoImagem extends Model
 {
     public $timestamps = false;
 
-    protected $fillable = ['file','produto_id'];
+    protected $fillable = ['file','produto_id','id'];
 
     // imagem tem 1 produto
     public function produto ()

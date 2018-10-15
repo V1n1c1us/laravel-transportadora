@@ -40,6 +40,7 @@
                         <th>#</th>
                         <th>Imagem</th>
                         <th>Check</th>
+                        <th>Operação</th>
                     </tr>
                     @forelse ($produto->imagens as $produtoImagem)
                     <tr>
@@ -55,6 +56,7 @@
 
                             </div>
                         </td>
+                        <td><input class="form-check-input" type="checkbox" value="{{ $produtoImagem->id }}" id="delete_images" name="delete_images[]"></td>
                     </tr>
                     @empty
 

@@ -19,7 +19,6 @@ $this->post('produto.store', 'ProdutoController@store')->name('produto.store');
 $this->get('produto/delete/{id}', 'ProdutoController@delete');
 $this->get('produto/edit/{id}', 'ProdutoController@edit');
 $this->post('produto/update/{id}', 'ProdutoController@update')->name('produto.update');
-$this->post('produto/updateimg/{id}', 'ProdutoController@updateimg')->name('produto.updateimg');
 
 $this->get('fornecedor', 'FornecedorController@index')->name('fornecedor.index');
 $this->post('store', 'FornecedorController@store')->name('fornecedor.store');

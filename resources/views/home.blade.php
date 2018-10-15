@@ -6,9 +6,11 @@
                 @forelse ($produtos as $produto)
                 <div class="col-md-4 m-bottom">
                     <div class="card text-center" style="width: 18rem;">
-                            @if($produto->imagens->isNotEmpty())
-                                <img class="img-fluid card-img-top" src="{{ $produto->imagens->first()->file }}" alt="Card image cap">
-                            @endif
+                            @foreach ($produto->imagens as $imagem)
+                                @if ($imagem->imgprincipal == 1)
+                                    <img class="img-fluid card-img-top" src="{{ $imagem->file }}" alt="Card image cap">
+                                @endif
+                            @endforeach
                         <div class="card-body">
                             <h5 class="card-title">{{ $produto->nome }}</h5>
                             @if ($produto->quantidade < 10)

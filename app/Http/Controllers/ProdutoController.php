@@ -21,7 +21,7 @@ class ProdutoController extends Controller
 
     public function index (Produto $produto)
     {
-        $produtos = $this->produto->with('imagens:id,produto_id,file','fornecedor:id,nome')->paginate(10);
+        $produtos = $this->produto->with('imagens:id,produto_id,file,imgprincipal','fornecedor:id,nome')->paginate(10);
 
         $fornecedores = $this->fornecedor->all();
 
@@ -74,20 +74,21 @@ class ProdutoController extends Controller
         $produto->descricao = $request->get('descricao');
         $produto->quantidade = $request->get('quantidade');
         $produto->fornecedor_id = $request->get('fornecedor_id');
+        $imagChecked = $request->get('delete_images');
         $idImg = $request->get('imgprincipal');
+
+        if($imagChecked != null){
+            //unlink(public_path(). DIRECTORY_SEPARATOR . $item->file);
+            $this->produtoImagem->destroy($imagChecked);
+        }
+
+        $this->produtoImagem->where('produto_id', $produto->id)->update(['imgprincipal' => 0]);
 
         $atualiza = $this->produtoImagem->where('id', '=', $idImg)->update(['imgprincipal' => 1]);
 
         $produto->save();
 
-        return redirect()->route('produto.index')->withSuccess('Produto cadastrado com sucesso!');
-    }
-
-    public function updateimg (Request $request, $id)
-    {
-        $produto = $this->produto->find($id);
-        dd($produto);
-        return redirect()->route('produto.index')->withSuccess('Produto cadastrado com sucesso!');
+        return redirect()->route('produto.index')->withSuccess('Produto editado com sucesso!');
     }
 
     public function delete($id)
