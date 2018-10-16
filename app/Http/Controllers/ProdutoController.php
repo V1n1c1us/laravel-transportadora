@@ -41,8 +41,31 @@ class ProdutoController extends Controller
            $destination = public_path() . DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR;
            $fullPath = DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR . $filename;
 
+           $filepath = public_path() . DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR . $filename;
+
            if(Storage::allFiles($folder) == []){
             $file->move($destination, $filename);
+            try {
+                \Tinify\setKey("yb-oBFKJV_eyc7qTVibYs5yMLyLrEYEY");
+                $source = \Tinify\fromFile($filepath);
+                $source->toFile($filepath);
+            } catch(\Tinify\AccountException $e) {
+                // Verify your API key and account limit.
+                return redirect('images/create')->with('error', $e->getMessage());
+            } catch(\Tinify\ClientException $e) {
+                // Check your source image and request options.
+                return redirect('images/create')->with('error', $e->getMessage());
+            } catch(\Tinify\ServerException $e) {
+                // Temporary issue with the Tinify API.
+                return redirect('images/create')->with('error', $e->getMessage());
+            } catch(\Tinify\ConnectionException $e) {
+                // A network connection error occurred.
+                return redirect('images/create')->with('error', $e->getMessage());
+            } catch(Exception $e) {
+                // Something else went wrong, unrelated to the Tinify API.
+                return redirect('images/create')->with('error', $e->getMessage());
+            }
+
             $createFile = $this->produtoImagem->create(['produto_id' => $insert->id,
                                                      'file' => $fullPath]);
          }
