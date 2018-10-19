@@ -8,7 +8,7 @@
                     <div class="card text-center" style="width: 18rem;">
                             @foreach ($produto->imagens as $imagem)
                                 @if ($imagem->imgprincipal == 1)
-                                    <img class="img-fluid card-img-top" src="{{ $imagem->file }}" alt="Card image cap">
+                                    <img class="img-fluid card-img-top" src="{{ Storage::url($imagem->file) }}" alt="Card image cap">
                                 @endif
                             @endforeach
                         <div class="card-body">

@@ -83,7 +83,7 @@
                                     @forelse ($produto->imagens as $produtoImg)
                                     <div class="col-md-4">
                                       <div class="card">
-                                          <img class="card-img-top rounded" src="{{asset($produtoImg->file) }}" alt="Card image cap">
+                                          <img class="card-img-top rounded" src="{{ Storage::url($produtoImg->file) }}" alt="Card image cap">
                                           <div class="card-body">
                                           </div>
                                         </div>

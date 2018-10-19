@@ -8,7 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Produto;
 use App\Fornecedor;
 use App\ProdutoImagem;
-
+use Image;
+use Illuminate\Http\File;
 class ProdutoController extends Controller
 {
 
@@ -32,44 +33,25 @@ class ProdutoController extends Controller
     {
        $insert = $this->produto->create($request->all());
 
-       $folder = 'produto_img_'.$request->nome;
+       //$folder = 'produto_img_'.$request->nome;
 
        $files = $request->file('file');
 
        foreach($files as $file) {
            $filename = str_random(30) . '.' . $file->getClientOriginalExtension();
            $destination = public_path() . DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR;
-           $fullPath = DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR . $filename;
+           //$fullPath = DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR . $filename;
+           $fullPath = 'fotos_produtos/'.$filename;
+           //$filepath = public_path() . DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR . $filename;
 
-           $filepath = public_path() . DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR . $filename;
+           $file = Storage::disk('public')->put('fotos_produtos', new File($file), 'public');
+           $image = Image::make('../storage/app/public/'.$file);
+           $image->save('../storage/app/public/fotos_produtos/'.$filename, 10);
 
-           if(Storage::allFiles($folder) == []){
-            $file->move($destination, $filename);
-            try {
-                \Tinify\setKey("yb-oBFKJV_eyc7qTVibYs5yMLyLrEYEY");
-                $source = \Tinify\fromFile($filepath);
-                $source->toFile($filepath);
-            } catch(\Tinify\AccountException $e) {
-                // Verify your API key and account limit.
-                return redirect('images/create')->with('error', $e->getMessage());
-            } catch(\Tinify\ClientException $e) {
-                // Check your source image and request options.
-                return redirect('images/create')->with('error', $e->getMessage());
-            } catch(\Tinify\ServerException $e) {
-                // Temporary issue with the Tinify API.
-                return redirect('images/create')->with('error', $e->getMessage());
-            } catch(\Tinify\ConnectionException $e) {
-                // A network connection error occurred.
-                return redirect('images/create')->with('error', $e->getMessage());
-            } catch(Exception $e) {
-                // Something else went wrong, unrelated to the Tinify API.
-                return redirect('images/create')->with('error', $e->getMessage());
-            }
+           $createFile = $this->produtoImagem->create(['produto_id' => $insert->id,
+                                                       'file' => $fullPath]);
+        }
 
-            $createFile = $this->produtoImagem->create(['produto_id' => $insert->id,
-                                                     'file' => $fullPath]);
-         }
-       }
         return redirect()->route('produto.index')
                          ->withSuccess('Fornecedor cadastrado com sucesso!');
     }
@@ -119,7 +101,7 @@ class ProdutoController extends Controller
         $produto = $this->produto->with('imagens','fornecedor')->find($id);
 
         foreach($produto->imagens as $item) {
-            unlink(public_path(). DIRECTORY_SEPARATOR . $item->file);
+            dd(Storage::disk('public')->delete($item->file));
         }
         $delete = $produto->delete();
 

@@ -45,7 +45,7 @@
                     @forelse ($produto->imagens as $produtoImagem)
                     <tr>
                         <td>{{ $produtoImagem->id }}</td>
-                        <td><img class="img-edit-table rounded" src="{{asset($produtoImagem->file) }}" alt=""></td>
+                        <td><img class="img-edit-table rounded" src="{{ Storage::url($produtoImagem->file) }}" alt=""></td>
                         <td>
                             <div class="form-check">
                                 @if ($produtoImagem->imgprincipal == 1)
