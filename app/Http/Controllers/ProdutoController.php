@@ -46,7 +46,7 @@ class ProdutoController extends Controller
 
            $file = Storage::disk('public')->put('fotos_produtos', new File($file), 'public');
            $image = Image::make('../storage/app/public/'.$file);
-           $image->save('../storage/app/public/fotos_produtos/'.$filename, 10);
+           $image->save('../storage/app/public/fotos_produtos/'.$filename, 50);
 
            $createFile = $this->produtoImagem->create(['produto_id' => $insert->id,
                                                        'file' => $fullPath]);
@@ -71,7 +71,7 @@ class ProdutoController extends Controller
         return view('produto.edit', compact('produto','fornecedores'));
     }
 
-    public function update (Request $request, $id)
+    public function update (Request $request,$id)
     {
         $produto = $this->produto->find($id);
 
@@ -101,8 +101,9 @@ class ProdutoController extends Controller
         $produto = $this->produto->with('imagens','fornecedor')->find($id);
 
         foreach($produto->imagens as $item) {
-            dd(Storage::disk('public')->delete($item->file));
+            Storage::delete('public/'.$item->file);
         }
+
         $delete = $produto->delete();
 
         if($delete){
