@@ -10,17 +10,18 @@ use App\Fornecedor;
 use App\ProdutoImagem;
 use Image;
 use Illuminate\Http\File;
+
 class ProdutoController extends Controller
 {
 
-    public function __construct(Produto $produto, Fornecedor $fornecedor, ProdutoImagem $produtoImagem)
+    public function __construct(Produto $produto,Fornecedor $fornecedor,ProdutoImagem $produtoImagem)
     {
         $this->produto = $produto;
         $this->fornecedor = $fornecedor;
         $this->produtoImagem = $produtoImagem;
     }
 
-    public function index (Produto $produto)
+    public function index(Produto $produto)
     {
         $produtos = $this->produto->with('imagens:id,produto_id,file,imgprincipal','fornecedor:id,nome')->paginate(10);
 
@@ -29,7 +30,7 @@ class ProdutoController extends Controller
         return view('produto.index', compact('produtos','fornecedores'));
     }
 
-    public function store (Request $request)
+    public function store(Request $request)
     {
        $insert = $this->produto->create($request->all());
 
@@ -56,7 +57,7 @@ class ProdutoController extends Controller
                          ->withSuccess('Fornecedor cadastrado com sucesso!');
     }
 
-    public function getInfo ($id)
+    public function getInfo($id)
     {
         //Loading Specific Columns-> imagens / fornecedor
         $produto = $this->produto->with('imagens:produto_id,file','fornecedor:id,nome')->find($id);
@@ -64,14 +65,14 @@ class ProdutoController extends Controller
         return view('produto.info', compact('produto'));
     }
 
-    public function edit ($id)
+    public function edit($id)
     {
         $produto = $this->produto->with('imagens:id,produto_id,file,imgprincipal','fornecedor:id,nome')->find($id);
         $fornecedores = $this->fornecedor->all();
         return view('produto.edit', compact('produto','fornecedores'));
     }
 
-    public function update (Request $request, $id)
+    public function update(Request $request,$id)
     {
         $produto = $this->produto->find($id);
 
@@ -101,7 +102,7 @@ class ProdutoController extends Controller
         $produto = $this->produto->with('imagens','fornecedor')->find($id);
 
         foreach($produto->imagens as $item) {
-            dd(Storage::disk('public')->delete($item->file));
+                Storage::get($item->file);
         }
         $delete = $produto->delete();
 
