@@ -72,11 +72,7 @@ class ProdutoController extends Controller
         return view('produto.edit', compact('produto','fornecedores'));
     }
 
-<<<<<<< HEAD
-    public function update (Request $request,$id)
-=======
     public function update(Request $request,$id)
->>>>>>> 73aceae675544f500d117d5e228fe8725954cfaf
     {
         $produto = $this->produto->find($id);
 
@@ -106,11 +102,7 @@ class ProdutoController extends Controller
         $produto = $this->produto->with('imagens','fornecedor')->find($id);
 
         foreach($produto->imagens as $item) {
-<<<<<<< HEAD
             Storage::delete('public/'.$item->file);
-=======
-                Storage::get($item->file);
->>>>>>> 73aceae675544f500d117d5e228fe8725954cfaf
         }
 
         $delete = $produto->delete();
