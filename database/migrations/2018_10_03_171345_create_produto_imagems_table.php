@@ -17,6 +17,7 @@ class CreateProdutoImagemsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('produto_id');
             $table->string('file');
+            $table->string('file_thumb');
             $table->boolean('imgprincipal')->default(0);
             $table->timestamps();
 
