@@ -10,6 +10,7 @@ use App\Fornecedor;
 use App\ProdutoImagem;
 use Image;
 use Illuminate\Http\File;
+use Carbon\Carbon;
 
 class ProdutoController extends Controller
 {
@@ -23,7 +24,7 @@ class ProdutoController extends Controller
 
     public function index(Produto $produto)
     {
-        $produtos = $this->produto->with('imagens:id,produto_id,file,imgprincipal','fornecedor:id,nome')->paginate(10);
+        $produtos = $this->produto->with('imagens:id,produto_id,file,file_thumb,imgprincipal','fornecedor:id,nome')->paginate(10);
 
         $fornecedores = $this->fornecedor->all();
 
@@ -40,17 +41,22 @@ class ProdutoController extends Controller
 
        foreach($files as $file) {
            $filename = str_random(30) . '.' . $file->getClientOriginalExtension();
-           $destination = public_path() . DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR;
+           //$current_time = Carbon::now()->timestamp;
+           //$filename = $current_time.'.'.$file->getClientOriginalExtension();
+           //$destination = public_path() . DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR;
            //$fullPath = DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR . $filename;
            $fullPath = 'fotos_produtos/'.$filename;
+           $fullpathThumb = 'fotos_produtos_thumb/'.$filename;
            //$filepath = public_path() . DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR . $filename;
 
            $file = Storage::disk('public')->put('fotos_produtos', new File($file), 'public');
+           Storage::makeDirectory('public/fotos_produtos_thumb');
            $image = Image::make('../storage/app/public/'.$file);
-           $image->save('../storage/app/public/fotos_produtos/'.$filename, 50);
+           $image->save('../storage/app/public/fotos_produtos_thumb/'.$filename, 50);
 
            $createFile = $this->produtoImagem->create(['produto_id' => $insert->id,
-                                                       'file' => $fullPath]);
+                                                       'file' => $fullPath,
+                                                       'file_thumb' => $fullpathThumb]);
         }
 
         return redirect()->route('produto.index')
@@ -60,14 +66,14 @@ class ProdutoController extends Controller
     public function getInfo($id)
     {
         //Loading Specific Columns-> imagens / fornecedor
-        $produto = $this->produto->with('imagens:produto_id,file','fornecedor:id,nome')->find($id);
+        $produto = $this->produto->with('imagens:produto_id,file,file_thumb','fornecedor:id,nome')->find($id);
         //dd($prodinfo);
         return view('produto.info', compact('produto'));
     }
 
     public function edit($id)
     {
-        $produto = $this->produto->with('imagens:id,produto_id,file,imgprincipal','fornecedor:id,nome')->find($id);
+        $produto = $this->produto->with('imagens:id,produto_id,file,file_thumb,imgprincipal','fornecedor:id,nome')->find($id);
         $fornecedores = $this->fornecedor->all();
         return view('produto.edit', compact('produto','fornecedores'));
     }
@@ -97,23 +103,39 @@ class ProdutoController extends Controller
         return redirect()->route('produto.index')->withSuccess('Produto editado com sucesso!');
     }
 
+    /**
+     * Remove register and file from storage
+     *
+     * @param int $id
+     * @return void
+     */
     public function delete($id)
     {
         $produto = $this->produto->with('imagens','fornecedor')->find($id);
 
-        foreach($produto->imagens as $item) {
-            Storage::delete('public/'.$item->file);
+        if(isset($produto)) {
+            foreach($produto->imagens as $image) {
+                $deletefile =
+                $deletefilethumb = $image->file_thumb;
+                dd(Storage::disk('public')->delete($image->file, $deletefile));
+                //Storage::disk('public')->delete($deletefilethumb);
+            }
+            $delete = $produto->delete();
+            if($delete){
+                return redirect()->route('produto.index')
+                ->withSuccess('Produto deletado com sucesso!');
+            } else {
+                redirect()->route('/')
+                             ->withSuccess('Produto deletado com sucesso!');
+            }
         }
 
-        $delete = $produto->delete();
 
-        if($delete){
-            return redirect()->route('produto.index')
-            ->withSuccess('Produto deletado com sucesso!');
-        } else {
-            redirect()->route('/')
-                         ->withSuccess('Produto deletado com sucesso!');
-        }
+        /*
+
+
+
+        */
     }
 
 }
