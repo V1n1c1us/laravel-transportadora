@@ -42,21 +42,21 @@
                         <th>Check</th>
                         <th>Operação</th>
                     </tr>
-                    @forelse ($produto->imagens as $produtoImagem)
+                    @forelse ($produto->imagens as $image)
                     <tr>
-                        <td>{{ $produtoImagem->id }}</td>
-                        <td><img class="img-edit-table rounded" src="{{ Storage::url($produtoImagem->file) }}" alt=""></td>
+                        <td>{{ $image->id }}</td>
+                        <td><img class="img-edit-table rounded" src="{{ Storage::url($image->file_thumb) }}" alt=""></td>
                         <td>
                             <div class="form-check">
-                                @if ($produtoImagem->imgprincipal == 1)
-                                    <input class="form-check-input" type="radio" value="{{ $produtoImagem->id }}" id="imgprincipal" name="imgprincipal" checked>
+                                @if ($image->imgprincipal == 1)
+                                    <input class="form-check-input" type="radio" value="{{ $image->id }}" id="imgprincipal" name="imgprincipal" checked>
                                 @else
-                                    <input class="form-check-input" type="radio" value="{{ $produtoImagem->id }}" id="imgprincipal" name="imgprincipal">
+                                    <input class="form-check-input" type="radio" value="{{ $image->id }}" id="imgprincipal" name="imgprincipal">
                                 @endif
 
                             </div>
                         </td>
-                        <td><input class="form-check-input" type="checkbox" value="{{ $produtoImagem->id }}" id="delete_images" name="delete_images[]"></td>
+                        <td><input class="form-check-input" type="checkbox" value="{{ $image->id }}" id="delete_images" name="delete_images[]"></td>
                     </tr>
                     @empty
 

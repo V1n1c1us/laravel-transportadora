@@ -80,10 +80,10 @@
                         <div class="modal-body">
                             <div class="container-fluid">
                                 <div class="row">
-                                    @forelse ($produto->imagens as $produtoImg)
+                                    @forelse ($produto->imagens as $image)
                                     <div class="col-md-4">
                                       <div class="card">
-                                          <img class="card-img-top rounded" src="{{ Storage::url($produtoImg->file) }}" alt="Card image cap">
+                                          <img class="card-img-top rounded" src="{{ Storage::url($image->file_thumb) }}" alt="Card image cap">
                                           <div class="card-body">
                                           </div>
                                         </div>
