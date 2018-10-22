@@ -40,7 +40,8 @@ class ProdutoController extends Controller
        $files = $request->file('file');
 
        foreach($files as $file) {
-           $filename = str_random(30) . '.' . $file->getClientOriginalExtension();
+           $file->size();
+           $filename = Carbon::now()->timestamp. '.' . $file->getClientOriginalExtension();
            //$current_time = Carbon::now()->timestamp;
            //$filename = $current_time.'.'.$file->getClientOriginalExtension();
            //$destination = public_path() . DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR;
@@ -52,6 +53,7 @@ class ProdutoController extends Controller
            Storage::putFileAs('public/fotos_produtos/', $file, $filename,'public');
            Storage::makeDirectory('public/fotos_produtos_thumb');
            $image = Image::make('../storage/app/public/'.$fullPath)->save('../storage/app/public/'.$fullpathThumb, 40);
+           dd($image->filesize());
 
            /*$file = Storage::disk('public')->put('fotos_produtos', new File($file), 'public');
 
