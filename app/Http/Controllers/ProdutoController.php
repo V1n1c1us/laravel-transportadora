@@ -49,11 +49,15 @@ class ProdutoController extends Controller
            $fullpathThumb = 'fotos_produtos_thumb/'.$filename;
            //$filepath = public_path() . DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR . $filename;
 
-           $file = Storage::disk('public')->put('fotos_produtos', new File($file), 'public');
+           Storage::putFileAs('public/fotos_produtos/', $file, $filename,'public');
            Storage::makeDirectory('public/fotos_produtos_thumb');
-           $image = Image::make('../storage/app/public/'.$file);
-           $image->save('../storage/app/public/fotos_produtos_thumb/'.$filename, 50);
+           $image = Image::make('../storage/app/public/'.$fullPath)->save('../storage/app/public/'.$fullpathThumb, 40);
 
+           /*$file = Storage::disk('public')->put('fotos_produtos', new File($file), 'public');
+
+           $image = Image::make('../storage/app/public/'.$file);
+           $image->save('../storage/app/public/'.$fullpathThumb, 40);
+            */
            $createFile = $this->produtoImagem->create(['produto_id' => $insert->id,
                                                        'file' => $fullPath,
                                                        'file_thumb' => $fullpathThumb]);
@@ -115,9 +119,12 @@ class ProdutoController extends Controller
 
         if(isset($produto)) {
             foreach($produto->imagens as $image) {
-                $deletefile =
+                $deletefile = $image->file;
                 $deletefilethumb = $image->file_thumb;
-                dd(Storage::disk('public')->delete($image->file, $deletefile));
+                Storage::disk('public')->delete([$deletefile, $deletefilethumb]);
+
+                //unlink(storage_path('public/'.$image->file));
+                //unlink(storage_path('public/'.$image->file));
                 //Storage::disk('public')->delete($deletefilethumb);
             }
             $delete = $produto->delete();
