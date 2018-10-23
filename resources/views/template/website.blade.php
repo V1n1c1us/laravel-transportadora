@@ -24,13 +24,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item active">
-                    <a class="nav-link" href="{{ route('home') }}">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="{{ url('/')}}">Home <span class="sr-only">(current)</span></a>
             </li>
                 <li class="nav-item">
-                <a class="nav-link" href="{{ route('produto.index') }}">Produto</a>
+                <a class="nav-link" href="{{ url('/produto/create') }}">Produto</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('fornecedor.index') }}">Fornecedor</a>
+                <a class="nav-link" href="{{ url('/fornecedor/create') }}">Fornecedor</a>
             </li>
             </ul>
         </div>

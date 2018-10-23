@@ -1,7 +1,7 @@
 @extends('template.website')
 @section('content')
 
-<form action="{{ route('produto.update', $produto->id) }}" method="post" enctype="multipart/form-data">
+<form action="{{ url('/produto/update', $produto->id) }}" method="post" enctype="multipart/form-data">
     @csrf
     <div class="form-row">
         <div class="form-group col-md-6">

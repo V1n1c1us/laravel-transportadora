@@ -15,7 +15,7 @@
         </ul>
     </div>
 @endif
-<form action="{{ route('produto.store') }}" method="post" enctype="multipart/form-data">
+<form action="{{ url('/produto/store') }}" method="post" enctype="multipart/form-data">
     @csrf
     <div class="form-row">
         <div class="form-group col-md-6">
@@ -116,10 +116,10 @@
             <td>
                 <div class="btn-group" role="group" aria-label="actions">
                     <button type="button" class="btn btn-link">
-                        <a href="produto/delete/{{ $produto->id }}"><i class="fas fa-trash-alt fa-1x"></i></a>
+                        <a href="{{ url('/produto/delete/'.$produto->id) }}"><i class="fas fa-trash-alt fa-1x"></i></a>
                     </button>
                     <button type="button" class="btn btn-link">
-                        <a href="produto/edit/{{ $produto->id }}"><i class="fas fa-edit fa-1x"></i></a>
+                        <a href="{{ url('/produto/edit/'.$produto->id) }}"><i class="fas fa-edit fa-1x"></i></a>
                     </button>
                 </div>
             </td>
