@@ -33,6 +33,9 @@ class ProdutoController extends Controller
 
     public function store(Request $request)
     {
+        $validated = $request->validate([
+
+        ]);
        $insert = $this->produto->create($request->all());
 
        //$folder = 'produto_img_'.$request->nome;
@@ -40,7 +43,6 @@ class ProdutoController extends Controller
        $files = $request->file('file');
 
        foreach($files as $file) {
-           $file->size();
            $filename = Carbon::now()->timestamp. '.' . $file->getClientOriginalExtension();
            //$current_time = Carbon::now()->timestamp;
            //$filename = $current_time.'.'.$file->getClientOriginalExtension();
@@ -53,7 +55,6 @@ class ProdutoController extends Controller
            Storage::putFileAs('public/fotos_produtos/', $file, $filename,'public');
            Storage::makeDirectory('public/fotos_produtos_thumb');
            $image = Image::make('../storage/app/public/'.$fullPath)->save('../storage/app/public/'.$fullpathThumb, 40);
-           dd($image->filesize());
 
            /*$file = Storage::disk('public')->put('fotos_produtos', new File($file), 'public');
 

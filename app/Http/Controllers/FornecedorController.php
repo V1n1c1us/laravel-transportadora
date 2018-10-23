@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Fornecedor;
+use App\Http\Requests\FornecedorRequest;
 
 class FornecedorController extends Controller
 {
@@ -19,7 +20,7 @@ class FornecedorController extends Controller
         return view ('fornecedor.index', compact('fornecedores'));
     }
 
-    public function store (Request $request)
+    public function store (FornecedorRequest $request)
     {
         $insert = $this->fornecedor->create($request->all());
 
