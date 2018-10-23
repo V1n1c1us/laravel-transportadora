@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Produto;
 use App\Fornecedor;
 use App\ProdutoImagem;
+use App\Http\Requests\ProdutoRequest;
 use Image;
 use Illuminate\Http\File;
 use Carbon\Carbon;
@@ -31,11 +32,8 @@ class ProdutoController extends Controller
         return view('produto.index', compact('produtos','fornecedores'));
     }
 
-    public function store(Request $request)
+    public function store(ProdutoRequest $request)
     {
-        $validated = $request->validate([
-
-        ]);
        $insert = $this->produto->create($request->all());
 
        //$folder = 'produto_img_'.$request->nome;
@@ -66,11 +64,11 @@ class ProdutoController extends Controller
                                                        'file_thumb' => $fullpathThumb]);
         }
 
-        return redirect()->route('produto.index')
+        return redirect()->url('produto.index')
                          ->withSuccess('Fornecedor cadastrado com sucesso!');
     }
 
-    public function getInfo($id)
+    public function view($id)
     {
         //Loading Specific Columns-> imagens / fornecedor
         $produto = $this->produto->with('imagens:produto_id,file,file_thumb','fornecedor:id,nome')->find($id);
@@ -107,7 +105,7 @@ class ProdutoController extends Controller
 
         $produto->save();
 
-        return redirect()->route('produto.index')->withSuccess('Produto editado com sucesso!');
+        return redirect()->route('produto.create')->withSuccess('Produto editado com sucesso!');
     }
 
     /**
