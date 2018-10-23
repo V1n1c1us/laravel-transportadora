@@ -4,6 +4,8 @@
 .m-bottom{
     margin-bottom: 2%;
 }
+
+.shadow-sm {box-shadow: 0 15px 30px 0 rgba(0,0,0,.11), 0 5px 15px 0 rgba(0,0,0,.08) !important}
 /* Modal Products Image */
 ul.modal-list { list-style: none; display: inline;}
 li .modal-image{ width: 250px; height: 250px; padding: 10px;}
