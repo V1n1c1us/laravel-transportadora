@@ -64,7 +64,7 @@ class ProdutoController extends Controller
                                                        'file_thumb' => $fullpathThumb]);
         }
 
-        return redirect()->url('produto.index')
+        return redirect()->route('produto.create')
                          ->withSuccess('Fornecedor cadastrado com sucesso!');
     }
 
@@ -73,7 +73,7 @@ class ProdutoController extends Controller
         //Loading Specific Columns-> imagens / fornecedor
         $produto = $this->produto->with('imagens:produto_id,file,file_thumb','fornecedor:id,nome')->find($id);
         //dd($prodinfo);
-        return view('produto.info', compact('produto'));
+        return view('produto.view', compact('produto'));
     }
 
     public function edit($id)
@@ -130,11 +130,11 @@ class ProdutoController extends Controller
             }
             $delete = $produto->delete();
             if($delete){
-                return redirect()->route('produto.index')
+                return redirect()->route('produto.create')
                 ->withSuccess('Produto deletado com sucesso!');
             } else {
-                redirect()->route('/')
-                             ->withSuccess('Produto deletado com sucesso!');
+                return redirect()->route('/')
+                             ->withSuccess('Ops.. Erro ao deletar o produto!');
             }
         }
 

@@ -5,6 +5,7 @@
         {{ session('success') }}
     </div>
 @endif
+
 @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
@@ -14,7 +15,7 @@
         </ul>
     </div>
 @endif
-<form action="{{ route('fornecedor.store') }}" method="post">
+<form action="{{ url('fornecedor/store') }}" method="post">
     @csrf
     <input type="text" name="nome" id="">
     <input type="text" name="cnpj" id="">

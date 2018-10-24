@@ -14,10 +14,10 @@
                                         @endif
                                     @endforeach
                                     <div class="card-body">
-                                      <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                      <p class="card-text">{{ $produto->descricao }}</p>
                                       <div class="d-flex justify-content-between align-items-center">
                                         <div class="btn-group">
-                                          <button type="button" class="btn btn-sm btn-outline-secondary"><a href="produto/info/{{ $produto->id }}">View</a></button>
+                                          <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{{ url('produto/view/'.$produto->id) }}">View</a></button>
                                         </div>
                                         <small class="text-muted">
                                                 @if ($produto->quantidade < 10)
