@@ -41,7 +41,7 @@ class ProdutoController extends Controller
        $files = $request->file('file');
 
        foreach($files as $file) {
-           $filename = Carbon::now()->timestamp. '.' . $file->getClientOriginalExtension();
+           $filename = now()->timestamp. '.' . $file->getClientOriginalExtension();
            //$current_time = Carbon::now()->timestamp;
            //$filename = $current_time.'.'.$file->getClientOriginalExtension();
            //$destination = public_path() . DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR;

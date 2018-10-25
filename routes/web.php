@@ -14,7 +14,7 @@
 Route::get('/',['as' => 'home','uses' => 'HomeController@index']);
 
 /*
-*   FORNECEDOR ROTAS
+*   PRODUTO ROUTE
 */
 Route::group(['prefix' => 'produto'], function() {
     //
@@ -26,26 +26,12 @@ Route::group(['prefix' => 'produto'], function() {
     Route::post('/update/{id}',['as' => 'produto.update','uses' => 'ProdutoController@update']);
     Route::get('/delete/{id}', ['as' => 'produto.delete','uses'=>'ProdutoController@delete']);
 });
-
 /*
-*   FORNECEDOR ROTAS
+*   FORNECEDOR ROUTE
 */
-
 Route::group(['prefix' => 'fornecedor'], function() {
     //
     Route::get('/create',['as' => 'fornecedor.index','uses' => 'FornecedorController@index']);
     Route::post('/store',['as' => 'fornecedor.store','uses' => 'FornecedorController@store']);
 });
 
-
-
-
-//$this->get('produto', 'ProdutoController@index')->name('produto.index');
-//$this->get('produto/info/{id}', 'ProdutoController@getInfo');
-//$this->post('produto.store', 'ProdutoController@store')->name('produto.store');
-//Route::get('produto/delete/{id}', 'ProdutoController@delete');
-//$this->get('produto/edit/{id}', 'ProdutoController@edit');
-///$this->post('produto/update/{id}', 'ProdutoController@update')->name('produto.update');
-
-//$this->get('fornecedor', 'FornecedorController@index')->name('fornecedor.index');
-//$this->post('store', 'FornecedorController@store')->name('fornecedor.store');
