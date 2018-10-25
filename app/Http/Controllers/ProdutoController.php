@@ -94,18 +94,27 @@ class ProdutoController extends Controller
         $imagChecked = $request->get('delete_images');
         $idImg = $request->get('imgprincipal');
 
-        if($imagChecked != null){
-            //unlink(public_path(). DIRECTORY_SEPARATOR . $item->file);
-            $this->produtoImagem->destroy($imagChecked);
-        }
+        $files = $request->file('file');
+        foreach($files as $file) {
+            $filename = now()->timestamp. '.' . $file->getClientOriginalExtension();
+            $fullPath = 'fotos_produtos/'.$filename;
+            $fullpathThumb = 'fotos_produtos_thumb/'.$filename;
 
-        $this->produtoImagem->where('produto_id', $produto->id)->update(['imgprincipal' => 0]);
+            Storage::putFileAs('public/fotos_produtos/', $file, $filename,'public');
+            Storage::makeDirectory('public/fotos_produtos_thumb');
+            $image = Image::make('../storage/app/public/'.$fullPath)->save('../storage/app/public/'.$fullpathThumb, 40);
 
-        $atualiza = $this->produtoImagem->where('id', '=', $idImg)->update(['imgprincipal' => 1]);
+            $createFile = $this->produtoImagem->create(['produto_id' => $produto->id,
+                                                        'file' => $fullPath,
+                                                        'file_thumb' => $fullpathThumb]);
+         }
 
-        $produto->save();
+       $this->produtoImagem->where('produto_id', $produto->id)->update(['imgprincipal' => 0]);
+       $atualiza = $this->produtoImagem->where('id', '=', $idImg)->update(['imgprincipal' => 1]);
 
-        return redirect()->route('produto.create')->withSuccess('Produto editado com sucesso!');
+       $produto->save();
+
+       return redirect()->route('produto.create')->withSuccess('Produto editado com sucesso!');
     }
 
     /**
