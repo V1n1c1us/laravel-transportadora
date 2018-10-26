@@ -95,6 +95,7 @@ class ProdutoController extends Controller
         $idImg = $request->get('imgprincipal');
 
         $files = $request->file('file');
+        if(isset($file)){
         foreach($files as $file) {
             $filename = now()->timestamp. '.' . $file->getClientOriginalExtension();
             $fullPath = 'fotos_produtos/'.$filename;
@@ -108,6 +109,21 @@ class ProdutoController extends Controller
                                                         'file' => $fullPath,
                                                         'file_thumb' => $fullpathThumb]);
          }
+        }
+       if($imagChecked != null){
+           foreach($produto->imagens as $image) {
+                $deletefile = $image->file;
+                $deletefilethumb = $image->file_thumb;
+                Storage::disk('public')->delete([$deletefile, $deletefilethumb]);
+                $this->produtoImagem->destroy($deletefile);
+                $this->produtoImagem->destroy($deletefilethumb);
+                //unlink(storage_path('public/'.$image->file));
+                //unlink(storage_path('public/'.$image->file));
+                //Storage::disk('public')->delete($deletefilethumb);
+            }
+            // unlink(public_path(). DIRECTORY_SEPARATOR . $item->files);
+            // $this->produtoImagem->destroy($imagChecked);
+       }
 
        $this->produtoImagem->where('produto_id', $produto->id)->update(['imgprincipal' => 0]);
        $atualiza = $this->produtoImagem->where('id', '=', $idImg)->update(['imgprincipal' => 1]);

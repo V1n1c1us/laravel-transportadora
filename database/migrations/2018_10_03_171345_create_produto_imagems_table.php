@@ -16,8 +16,8 @@ class CreateProdutoImagemsTable extends Migration
         Schema::create('produto_imagems', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('produto_id');
-            $table->string('file');
-            $table->string('file_thumb');
+            $table->string('file')->nullable();
+            $table->string('file_thumb')->nullable();
             $table->boolean('imgprincipal')->default(0);
             $table->timestamps();
 
