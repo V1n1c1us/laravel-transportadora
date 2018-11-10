@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
@@ -12,36 +10,28 @@ use App\Http\Requests\ProdutoRequest;
 use Image;
 use Illuminate\Http\File;
 use Carbon\Carbon;
-
 class ProdutoController extends Controller
 {
-
     public function __construct(Produto $produto,Fornecedor $fornecedor,ProdutoImagem $produtoImagem)
     {
         $this->produto = $produto;
         $this->fornecedor = $fornecedor;
         $this->produtoImagem = $produtoImagem;
     }
-
     public function index(Produto $produto)
     {
         $produtos = $this->produto->with('imagens:id,produto_id,file,file_thumb,imgprincipal','fornecedor:id,nome')->paginate(10);
-
         $fornecedores = $this->fornecedor->all();
-
         return view('produto.index', compact('produtos','fornecedores'));
     }
-
     public function store(ProdutoRequest $request)
     {
        $insert = $this->produto->create($request->all());
-
        //$folder = 'produto_img_'.$request->nome;
-
        $files = $request->file('file');
-
        foreach($files as $file) {
-           $filename = now()->timestamp. '.' . $file->getClientOriginalExtension();
+           //$filename = str_random(30) . '.' . $file->getClientOriginalExtension();
+           $filename = round(microtime(true) * 1000) . '.' . $file->getClientOriginalExtension();
            //$current_time = Carbon::now()->timestamp;
            //$filename = $current_time.'.'.$file->getClientOriginalExtension();
            //$destination = public_path() . DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR;
@@ -49,13 +39,10 @@ class ProdutoController extends Controller
            $fullPath = 'fotos_produtos/'.$filename;
            $fullpathThumb = 'fotos_produtos_thumb/'.$filename;
            //$filepath = public_path() . DIRECTORY_SEPARATOR . 'produtos' . DIRECTORY_SEPARATOR . $filename;
-
            Storage::putFileAs('public/fotos_produtos/', $file, $filename,'public');
            Storage::makeDirectory('public/fotos_produtos_thumb');
            $image = Image::make('../storage/app/public/'.$fullPath)->save('../storage/app/public/'.$fullpathThumb, 40);
-
            /*$file = Storage::disk('public')->put('fotos_produtos', new File($file), 'public');
-
            $image = Image::make('../storage/app/public/'.$file);
            $image->save('../storage/app/public/'.$fullpathThumb, 40);
             */
@@ -63,11 +50,9 @@ class ProdutoController extends Controller
                                                        'file' => $fullPath,
                                                        'file_thumb' => $fullpathThumb]);
         }
-
         return redirect()->route('produto.create')
                          ->withSuccess('Fornecedor cadastrado com sucesso!');
     }
-
     public function view($id)
     {
         //Loading Specific Columns-> imagens / fornecedor
@@ -75,7 +60,6 @@ class ProdutoController extends Controller
         //dd($prodinfo);
         return view('produto.view', compact('produto'));
     }
-
     public function edit($id)
     {
         $produto = $this->produto->with('imagens:id,produto_id,file,file_thumb,imgprincipal','fornecedor:id,nome')->find($id);
@@ -86,53 +70,47 @@ class ProdutoController extends Controller
     public function update(Request $request,$id)
     {
         $produto = $this->produto->find($id);
-
         $produto->nome = $request->get('nome');
         $produto->descricao = $request->get('descricao');
         $produto->quantidade = $request->get('quantidade');
         $produto->fornecedor_id = $request->get('fornecedor_id');
         $imagChecked = $request->get('delete_images');
         $idImg = $request->get('imgprincipal');
-
         $files = $request->file('file');
-        if(isset($file)){
+
+        if(isset($files)){
         foreach($files as $file) {
-            $filename = now()->timestamp. '.' . $file->getClientOriginalExtension();
+            $filename = str_random(30) . '.' . $file->getClientOriginalExtension();
             $fullPath = 'fotos_produtos/'.$filename;
             $fullpathThumb = 'fotos_produtos_thumb/'.$filename;
-
             Storage::putFileAs('public/fotos_produtos/', $file, $filename,'public');
             Storage::makeDirectory('public/fotos_produtos_thumb');
             $image = Image::make('../storage/app/public/'.$fullPath)->save('../storage/app/public/'.$fullpathThumb, 40);
-
             $createFile = $this->produtoImagem->create(['produto_id' => $produto->id,
                                                         'file' => $fullPath,
                                                         'file_thumb' => $fullpathThumb]);
          }
         }
        if($imagChecked != null){
+        //dd($imagChecked);
            foreach($produto->imagens as $image) {
                 $deletefile = $image->file;
                 $deletefilethumb = $image->file_thumb;
-                Storage::disk('public')->delete([$deletefile, $deletefilethumb]);
-                $this->produtoImagem->destroy($deletefile);
-                $this->produtoImagem->destroy($deletefilethumb);
-                //unlink(storage_path('public/'.$image->file));
-                //unlink(storage_path('public/'.$image->file));
-                //Storage::disk('public')->delete($deletefilethumb);
+                for ($i=0; $i < count($imagChecked); $i++) {
+                    if($imagChecked[$i] == $image->id){
+                        Storage::disk('public')->delete([$deletefile, $deletefilethumb]);
+
+                        break;
+                    }
+                }
             }
-            // unlink(public_path(). DIRECTORY_SEPARATOR . $item->files);
-            // $this->produtoImagem->destroy($imagChecked);
+            $this->produtoImagem->destroy($imagChecked);
        }
-
        $this->produtoImagem->where('produto_id', $produto->id)->update(['imgprincipal' => 0]);
-       $atualiza = $this->produtoImagem->where('id', '=', $idImg)->update(['imgprincipal' => 1]);
-
+       $this->produtoImagem->where('id', '=', $idImg)->update(['imgprincipal' => 1]);
        $produto->save();
-
        return redirect()->route('produto.create')->withSuccess('Produto editado com sucesso!');
     }
-
     /**
      * Remove register and file from storage
      *
@@ -142,13 +120,11 @@ class ProdutoController extends Controller
     public function delete($id)
     {
         $produto = $this->produto->with('imagens','fornecedor')->find($id);
-
         if(isset($produto)) {
             foreach($produto->imagens as $image) {
                 $deletefile = $image->file;
                 $deletefilethumb = $image->file_thumb;
                 Storage::disk('public')->delete([$deletefile, $deletefilethumb]);
-
                 //unlink(storage_path('public/'.$image->file));
                 //unlink(storage_path('public/'.$image->file));
                 //Storage::disk('public')->delete($deletefilethumb);
@@ -162,13 +138,7 @@ class ProdutoController extends Controller
                              ->withSuccess('Ops.. Erro ao deletar o produto!');
             }
         }
-
-
         /*
-
-
-
         */
     }
-
 }
