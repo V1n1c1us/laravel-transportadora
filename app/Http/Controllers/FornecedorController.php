@@ -17,7 +17,9 @@ class FornecedorController extends Controller
     {
         $fornecedores = $this->fornecedor->all();
 
-        return view ('fornecedor.index', compact('fornecedores'));
+        //return $fornecedores;
+        return response()->json($fornecedores);
+        //return view ('fornecedor.index', compact('fornecedores'));
     }
 
     public function store (FornecedorRequest $request)

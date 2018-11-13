@@ -80,7 +80,7 @@ class ProdutoController extends Controller
 
         if(isset($files)){
         foreach($files as $file) {
-            $filename = str_random(30) . '.' . $file->getClientOriginalExtension();
+            $filename = round(microtime(true) * 1000) . '.' . $file->getClientOriginalExtension();
             $fullPath = 'fotos_produtos/'.$filename;
             $fullpathThumb = 'fotos_produtos_thumb/'.$filename;
             Storage::putFileAs('public/fotos_produtos/', $file, $filename,'public');
@@ -92,15 +92,12 @@ class ProdutoController extends Controller
          }
         }
        if($imagChecked != null){
-        //dd($imagChecked);
            foreach($produto->imagens as $image) {
                 $deletefile = $image->file;
                 $deletefilethumb = $image->file_thumb;
                 for ($i=0; $i < count($imagChecked); $i++) {
                     if($imagChecked[$i] == $image->id){
                         Storage::disk('public')->delete([$deletefile, $deletefilethumb]);
-
-                        break;
                     }
                 }
             }
