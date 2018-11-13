@@ -12,7 +12,11 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('/teste', 'FornecedorController@index');
+Route::group(['middleware' => ['cors']], function () {
+    Route::get('/teste', 'FornecedorControllerApi@index');
+    Route::post('/create', 'FornecedorControllerApi@store');
+});
+
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
